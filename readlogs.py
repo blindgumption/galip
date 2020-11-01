@@ -1,4 +1,5 @@
-
+        #!/usr/bin/env python3 
+#     
 
 import json 
 
@@ -25,7 +26,7 @@ def is_json(tstr):
 ## 
 with open('/var/log/nginx/access.log', 'rb') as logs:
     for blog in logs:
-        print('=-=-=-=-=-=-')
+        print('=-=-=-=-=-')
         log = blog.decode(errors='ignore')
         lobj = is_json(log)
         if lobj != None:
@@ -34,4 +35,3 @@ with open('/var/log/nginx/access.log', 'rb') as logs:
             print('NO, it is NOT JSON!!')
 
 
-        
