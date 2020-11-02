@@ -4,7 +4,8 @@ GALIP is a project to extract IP addresses from web server access logs and use t
 
 The initial focus is using Nginx access logs formatted in JSON using the following directives in the http section of nginx.conf.  Because Nginx does not provide msecs on the ISO8601 timestamp, I use a map directive to create a new variable from the ISO8601 and unix timestamps.
 
-`
+```
+
         map "$time_iso8601:$msec" $time_iso8601_msec {
             ~^(\d+-\d+-\d+T\d+:\d+:\d+)([+|-]\d+:\d+):\d+(\.\d+)$ $1$3$2;}
 
@@ -22,4 +23,5 @@ The initial focus is using Nginx access logs formatted in JSON using the followi
 
         access_log  /var/log/nginx/access.log json_combined;
         ## access_log /var/log/nginx/access.log;
-`
+
+```
