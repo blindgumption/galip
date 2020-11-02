@@ -22,4 +22,4 @@ The initial focus is using Nginx access logs formatted in JSON using the followi
 
         access_log  /var/log/nginx/access.log json_combined;
         ## access_log /var/log/nginx/access.log;
-        `
+`
