@@ -51,7 +51,9 @@ These interfaces will evolve as blindgumption.com evolves.
 
 ## The Giolocation APIs 
 
-GALIP will initially use IPStack and Geolocate free tier services for  proof of concept.  If GALIP really takes off, maybe there will be some integration with MaxMind and it will be up to the users of GALIP if they want to pay for any of the geolocation lookup services.  
+GALIP will initially use 
+[IPStack](https://ipstack.com) and 
+[IPLocate](https://www.iplocate.io) free tier services for  proof of concept.  If GALIP really takes off, maybe there will be some integration with MaxMind and it will be up to the users of GALIP if they want to pay for any of the geolocation lookup services.  
 
 I got this idea from a 
 [blog regarding how to look up geolocation data](https://medium.com/@rossbulat/node-js-client-ip-location-with-geoip-lite-fallback-c25833c94a76).
