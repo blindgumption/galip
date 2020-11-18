@@ -9,8 +9,20 @@
 # what worked was opening the file as binary, read each line, decode and ignore errors.
 ## 
 
+import os
 import json 
 import time
+import json_logging
+import logging 
+import sys 
+# log is initialized without a web framework name
+json_logging.init_non_web(enable_json=True)
+
+logger = logging.getLogger("test-logger")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler(sys.stdout))
+
+
 
 
 def is_json(tstr):
@@ -26,19 +38,21 @@ def read_ad_nauseam(filename):
     with open(filename, 'rb') as logs:
         while(True):
             time.sleep(3)  # easier to keep track of the sleep indentation here...
-            print('anyting to read in the access logs?')
-            for blog in logs:
-                print('=-=-=-=-=-')
-                log = blog.decode(errors='ignore')
-                lobj = is_json(log)
-                if lobj != None:
-                    print(f"time_iso8601_msec: {lobj['time_iso8601_msec']}")
-                    print(f"remote address: {lobj['remote_addr']}")
+            logger.info('anyting to read in the access logs?')
+            for binary_log in logs:
+                logger.info('=-=-=-=-')
+                log = binary_log.decode(errors='ignore')
+                log_obj = is_json(log)
+                if log_obj:
+                    logger.info(f"time_iso8601_msec: {log_obj['time_iso8601_msec']}")
+                    logger.info(f"remote address: {log_obj['remote_addr']}")
                 else: 
-                    print('NO, it is NOT JSON!!')
+                    logger.info('WARNING: log statementis NOT JSON!!')
 
 
 if __name__ == '__main__':
-    read_ad_nauseam('/var/log/nginx/access.log')
+    logfile = os.getenv('GALIP_ACCESS_LOG_FILE')
+    if not logfile: logfile = '/var/log/nginx/access.log'
+    read_ad_nauseam(logfile)
 
 
