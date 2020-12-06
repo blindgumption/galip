@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 """ 
-read lines of text expected to be in JSON format
+generators that return objects from files containing lines of text each which is syntactically valid JSON
 
-lazy iterator to get JSON objects from file
+lazy iterator to get JSON objects from file.
+The expectation is each line in the file is syntactically valid JSON.
+Lines that are not valid JSON will be ignored.
+
+There are two generators in this module, they both return the same types of objects.
+The difference is in how long they run.
+getJsonObjectsFromFile(filename) will iterate through each line in the file and return an object if the line is valid JSON
+getJsonObjectsFromFileInfinite(filename) will open filename, iterate through all lines currently in the file, then wait for new lines to be added to the file.
+  As new lines are added, the generator returns objects if the added line is valid JSON.
 """
+
 
 import json
 import sys 
