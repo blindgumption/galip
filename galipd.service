@@ -1,0 +1,8 @@
+[Unit]
+Description=Geolocate Access Log daemon 
+
+[Service]
+ExecStart=/home/joel/projects/python/galip/galipd.py 
+Environment=PYTHONUNBUFFERED=1
+
+
