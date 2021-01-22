@@ -13,7 +13,7 @@ the data can be accessed later using the galip module also in this package.
 
 import os
 import jsonLogging
-from readJsonFile import getJsonObjectsFromFileInfinite as log_generator 
+from readJsonFile import getJsonObjectsFromFileInfinite as logGenerator 
 
 
 jogger = jsonLogging.getJsonLogger("galipd")
@@ -25,7 +25,7 @@ def getGeolocation(ip_addr):
 
 def processAccessLogs(filename):
     jogger.info("Processing access logs from {}".format(filename))
-    logs = log_generator(filename)
+    logs = logGenerator(filename)
     while True:
         try:
             alo = next(logs)   # access log object  

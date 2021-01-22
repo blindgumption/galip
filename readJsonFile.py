@@ -17,7 +17,6 @@ getJsonObjectsFromFileInfinite(filename) will open filename, iterate through all
 
 import json
 import sys 
-import time
 import os.path as path 
 import inotify.adapters as ina 
 import inotify.constants as inc
@@ -53,18 +52,14 @@ def getJsonObjectFromLog(binary_log):
 
 
 def getFileEvents(dirname, filename):
-    """
-    generator yielding events on file, filename, in directory, dirname 
-    """
+    """ generator yielding events on file, filename, in directory, dirname """
     inot = ina.Inotify()
     events_to_watch = inc.IN_MODIFY | inc.IN_CREATE | inc.IN_DELETE
     inot.add_watch(dirname, mask = events_to_watch)
     for event in inot.event_gen(yield_nones=False):
         (_, type_names, path, eventfile) = event
         if eventfile ==filename:
-            ## print("event {} :: {} :: {}".format(ecount, filename, type_names))
-            for ev in type_names:
-                yield ev
+            for ev in type_names: yield ev
 
 
 def getJsonObjectsFromFileInfinite(infile):
@@ -84,7 +79,7 @@ def getJsonObjectsFromFileInfinite(infile):
       modified, written to, or created, after logrotate.
       The event generator is used within the while True to trigger the reading of more data
       If the file event is "created":
-        the loop needs to make sure it has read everything from the file it had open,
+        the loop needs to make sure it has read everything from the file it already had open,
         then break out of the with ... loop to go back and open the newly created file 
         and read from that one.
         event notifications will follow the logrotate automagically  
@@ -99,16 +94,22 @@ def getJsonObjectsFromFileInfinite(infile):
                 if log_obj: yield log_obj
             #, now, listen for file events and act accordingly 
             for fev in file_events:
-                if fev == 'IN_DELETE': raise Exception("file [{}] was deleted".format(abs)) 
+                if fev == 'IN_DELETE': 
+                    raise Exception("file [{}] was deleted".format(abs)) 
                 for binary_log in logs:
                     log_obj = getJsonObjectFromLog(binary_log)
                     if log_obj: yield log_obj
                 if fev == 'IN_CREATE': 
-                    #, break should take us back to the top to open the new file
+                    # getting a created event on the filename means the file we currently have opened 
+                    # has been renamed and a new file of the same name has been created.   
+                    #  this is the signature of a logrotate 
+                    # by now, we should have already read what was left in the file that was moved.
+                    # break will take us back to the top to open the new file
                     break
 
 
 def getJsonObjectsFromFile(filename):
+    """ simply read all lines from the file and return objects for valid JSON lines """ 
     with open(filename,'rb') as logs:
         for binary_log in logs:
             log_obj = getJsonObjectFromLog(binary_log)
@@ -130,7 +131,6 @@ def printJsonLogsUsingNext(filename, property_to_print):
     jobjs = getJsonObjectsFromFileInfinite(filename) 
     count = 0
     while True:
-        ## time.sleep(3)
         print('found {} objects so far'.format(count))
         try:
             jobj = next(jobjs)
